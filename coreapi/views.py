@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
-from .serializers import QuestionSerializer
+from .serializers import QuestionSerializer, UserAnswerSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Question, UserAnswer
@@ -34,19 +34,42 @@ class QuestionDetails(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = QuestionSerializer(snippet)
+        question = self.get_object(pk)
+        serializer = QuestionSerializer(question)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        serializer = QuestionSerializer(snippet, data=request.data)
+        question = self.get_object(pk)
+        serializer = QuestionSerializer(question, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
-        snippet.delete()
+        question = self.get_object(pk)
+        question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AnswerDetails(APIView):
+    permission_classes = [IsAuthenticated]
+
+    # def get_object(self, question_id):
+    #     try:
+    #         return UserAnswer.objects.get(question_id=question_id)
+    #     except UserAnswer.DoesNotExist:
+    #         raise Http404
+
+    def get(self, request):
+        serializer = UserAnswerSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request):
+        serializer = UserAnswerSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

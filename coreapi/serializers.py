@@ -12,12 +12,11 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    question = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = UserAnswer
         fields = ['id', 'answer', 'question', 'user']
+        extra_kwargs = {'user': {'read_only': True}}
 
 
 class UserSerializer(serializers.ModelSerializer):
