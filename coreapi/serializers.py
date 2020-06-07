@@ -4,14 +4,11 @@ from django.conf import settings
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Question
-        fields = ['id', 'question_text']
-
-    def create(self, validated_data):
-        question = Question(question_text=validated_data['question_text'])
-        question.save()
-        return question
+        fields = ['id', 'question_text', 'created_by']
+        extra_kwargs = {'created_by': {'read_only': True}}
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
@@ -21,15 +18,6 @@ class UserAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserAnswer
         fields = ['id', 'answer', 'question', 'user']
-
-    def create(self, validated_data):
-        answer = UserAnswer(
-            answer=validated_data['answer'],
-            question=validated_data['question'],
-            user=validated_data['user']
-        )
-        answer.save()
-        return answer
 
 
 class UserSerializer(serializers.ModelSerializer):
