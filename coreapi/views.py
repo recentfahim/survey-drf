@@ -70,7 +70,7 @@ class AnswerDetails(APIView):
         return Response(context, status=status.HTTP_200_OK)
 
     def post(self, request):
-        serializer = UserAnswerSerializer(data=request.data, many=True)
+        serializer = UserAnswerSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
