@@ -15,7 +15,12 @@ class CreateQuestion(APIView):
         questions = Question.objects.all().order_by('created_at')
         serializers = QuestionSerializer(questions, many=True)
 
-        return Response(serializers.data, status=status.HTTP_200_OK)
+        context = {
+            'message': 'All questions',
+            'data': serializers.data,
+        }
+
+        return Response(context, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = QuestionSerializer(data=request.data)
@@ -26,7 +31,6 @@ class CreateQuestion(APIView):
 
 
 class QuestionDetails(APIView):
-
     def get_object(self, pk):
         try:
             return Question.objects.get(pk=pk)
@@ -55,17 +59,15 @@ class QuestionDetails(APIView):
 class AnswerDetails(APIView):
     permission_classes = [IsAuthenticated]
 
-    # def get_object(self, question_id):
-    #     try:
-    #         return UserAnswer.objects.get(question_id=question_id)
-    #     except UserAnswer.DoesNotExist:
-    #         raise Http404
-
     def get(self, request):
-        serializer = UserAnswerSerializer(data=request.data)
-        if serializer.is_valid():
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        queryset = UserAnswer.objects.filter(user=request.user)
+        serializer = UserAnswerSerializer(queryset, many=True)
+        context = {
+            'message': 'Your answers',
+            'data': serializer.data,
+        }
+
+        return Response(context, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = UserAnswerSerializer(data=request.data, many=True)
