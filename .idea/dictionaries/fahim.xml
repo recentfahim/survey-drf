@@ -6,6 +6,7 @@
       <w>coreapi</w>
       <w>corsheaders</w>
       <w>oamatrix</w>
+      <w>paypal</w>
     </words>
   </dictionary>
 </component>
