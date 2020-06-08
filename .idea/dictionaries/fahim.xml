@@ -1,7 +1,11 @@
 <component name="ProjectDictionaryState">
   <dictionary name="fahim">
     <words>
+      <w>allauth</w>
+      <w>authtoken</w>
       <w>coreapi</w>
+      <w>corsheaders</w>
+      <w>oamatrix</w>
     </words>
   </dictionary>
 </component>
