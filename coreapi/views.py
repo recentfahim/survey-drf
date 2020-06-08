@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
-from .serializers import QuestionSerializer, UserAnswerSerializer
+from .serializers import QuestionSerializer, UserAnswerSerializer, ReadUserAnswerSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Question, UserAnswer
@@ -61,7 +61,7 @@ class AnswerDetails(APIView):
 
     def get(self, request):
         queryset = UserAnswer.objects.filter(user=request.user)
-        serializer = UserAnswerSerializer(queryset, many=True)
+        serializer = ReadUserAnswerSerializer(queryset, many=True)
         context = {
             'message': 'Your answers',
             'data': serializer.data,
